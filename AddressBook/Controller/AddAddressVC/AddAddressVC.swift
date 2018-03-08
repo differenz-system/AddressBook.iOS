@@ -102,7 +102,7 @@ class AddAddressVC: BaseView, UITextFieldDelegate {
      */
     func setUpNavigationBar() {
         self.title = "Detail"
-        self.setLeftNavigationItem(withImage: UIImage(named: "back"), action: #selector(backClick(_:)))
+        self.setLeftNavigationItem(with: "Address Book", action: #selector(backClick(_:)))
         self.setRightNavigationItem(with: "Logout", action: #selector(logoutClick(_:)))
     }
     
