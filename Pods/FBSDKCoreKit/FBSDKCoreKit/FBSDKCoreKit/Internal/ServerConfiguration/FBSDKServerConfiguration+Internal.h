@@ -18,8 +18,16 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString *const FBSDKDialogConfigurationNameDefault;
-extern NSString *const FBSDKDialogConfigurationNameSharing;
+#import "FBSDKServerConfiguration.h"
 
-extern NSString *const FBSDKDialogConfigurationFeatureUseNativeFlow;
-extern NSString *const FBSDKDialogConfigurationFeatureUseSafariViewController;
+FOUNDATION_EXPORT NSString *const FBSDKDialogConfigurationNameDefault;
+FOUNDATION_EXPORT NSString *const FBSDKDialogConfigurationNameSharing;
+
+FOUNDATION_EXPORT NSString *const FBSDKDialogConfigurationFeatureUseNativeFlow;
+FOUNDATION_EXPORT NSString *const FBSDKDialogConfigurationFeatureUseSafariViewController;
+
+@interface FBSDKServerConfiguration (Internal)
+
++ (FBSDKServerConfiguration *)defaultServerConfigurationForAppID:(NSString *)appID;
+
+@end

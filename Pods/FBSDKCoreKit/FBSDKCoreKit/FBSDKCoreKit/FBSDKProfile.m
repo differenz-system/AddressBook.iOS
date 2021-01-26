@@ -16,33 +16,39 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import "FBSDKProfile+Internal.h"
+#import "TargetConditionals.h"
 
-#import "FBSDKCoreKit+Internal.h"
+#if !TARGET_OS_TV
+
+ #import "FBSDKProfile+Internal.h"
+
+ #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+
+NSNotificationName const FBSDKProfileDidChangeNotification = @"com.facebook.sdk.FBSDKProfile.FBSDKProfileDidChangeNotification";;
+
+ #else
 
 NSString *const FBSDKProfileDidChangeNotification = @"com.facebook.sdk.FBSDKProfile.FBSDKProfileDidChangeNotification";;
+
+ #endif
+
 NSString *const FBSDKProfileChangeOldKey = @"FBSDKProfileOld";
 NSString *const FBSDKProfileChangeNewKey = @"FBSDKProfileNew";
 static NSString *const FBSDKProfileUserDefaultsKey = @"com.facebook.sdk.FBSDKProfile.currentProfile";
 static FBSDKProfile *g_currentProfile;
 
-#define FBSDKPROFILE_USERID_KEY @"userID"
-#define FBSDKPROFILE_FIRSTNAME_KEY @"firstName"
-#define FBSDKPROFILE_MIDDLENAME_KEY @"middleName"
-#define FBSDKPROFILE_LASTNAME_KEY @"lastName"
-#define FBSDKPROFILE_NAME_KEY @"name"
-#define FBSDKPROFILE_LINKURL_KEY @"linkURL"
-#define FBSDKPROFILE_REFRESHDATE_KEY @"refreshDate"
+ #define FBSDKPROFILE_USERID_KEY @"userID"
+ #define FBSDKPROFILE_FIRSTNAME_KEY @"firstName"
+ #define FBSDKPROFILE_MIDDLENAME_KEY @"middleName"
+ #define FBSDKPROFILE_LASTNAME_KEY @"lastName"
+ #define FBSDKPROFILE_NAME_KEY @"name"
+ #define FBSDKPROFILE_LINKURL_KEY @"linkURL"
+ #define FBSDKPROFILE_REFRESHDATE_KEY @"refreshDate"
 
 // Once a day
-#define FBSDKPROFILE_STALE_IN_SECONDS (60 * 60 * 24)
+ #define FBSDKPROFILE_STALE_IN_SECONDS (60 * 60 * 24)
 
 @implementation FBSDKProfile
-
-- (instancetype)init NS_UNAVAILABLE
-{
-  assert(0);
-}
 
 - (instancetype)initWithUserID:(NSString *)userID
                      firstName:(NSString *)firstName
@@ -75,8 +81,8 @@ static FBSDKProfile *g_currentProfile;
     [[self class] cacheProfile:profile];
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
 
-    [FBSDKInternalUtility dictionary:userInfo setObject:profile forKey:FBSDKProfileChangeNewKey];
-    [FBSDKInternalUtility dictionary:userInfo setObject:g_currentProfile forKey:FBSDKProfileChangeOldKey];
+    [FBSDKTypeUtility dictionary:userInfo setObject:profile forKey:FBSDKProfileChangeNewKey];
+    [FBSDKTypeUtility dictionary:userInfo setObject:g_currentProfile forKey:FBSDKProfileChangeOldKey];
     g_currentProfile = profile;
     [[NSNotificationCenter defaultCenter] postNotificationName:FBSDKProfileDidChangeNotification
                                                         object:[self class]
@@ -86,28 +92,7 @@ static FBSDKProfile *g_currentProfile;
 
 - (NSURL *)imageURLForPictureMode:(FBSDKProfilePictureMode)mode size:(CGSize)size
 {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-  NSString *path = [self imagePathForPictureMode:mode size:size];
-#pragma clang diagnostic pop
-  return [FBSDKInternalUtility facebookURLWithHostPrefix:@"graph"
-                                                    path:path
-                                         queryParameters:nil
-                                                   error:NULL];
-}
-
-- (NSString *)imagePathForPictureMode:(FBSDKProfilePictureMode)mode size:(CGSize)size
-{
-  NSString *type;
-  switch (mode) {
-    case FBSDKProfilePictureModeNormal: type = @"normal"; break;
-    case FBSDKProfilePictureModeSquare: type = @"square"; break;
-  }
-  return [NSString stringWithFormat:@"%@/picture?type=%@&width=%d&height=%d",
-          _userID,
-          type,
-          (int) roundf(size.width),
-          (int) roundf(size.height)];
+  return [FBSDKProfile imageURLForProfileID:_userID PictureMode:mode size:size];
 }
 
 + (void)enableUpdatesOnAccessTokenChange:(BOOL)enable
@@ -122,31 +107,31 @@ static FBSDKProfile *g_currentProfile;
   }
 }
 
-+ (void)loadCurrentProfileWithCompletion:(void (^)(FBSDKProfile *, NSError *))completion
++ (void)loadCurrentProfileWithCompletion:(FBSDKProfileBlock)completion
 {
   [self loadProfileWithToken:[FBSDKAccessToken currentAccessToken] completion:completion];
 }
 
-#pragma mark - NSCopying
+ #pragma mark - NSCopying
 
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-  //immutable
+  // immutable
   return self;
 }
 
-#pragma mark - Equality
+ #pragma mark - Equality
 
 - (NSUInteger)hash
 {
   NSUInteger subhashes[] = {
-    [self.userID hash],
-    [self.firstName hash],
-    [self.middleName hash],
-    [self.lastName hash],
-    [self.name hash],
-    [self.linkURL hash],
-    [self.refreshDate hash]
+    self.userID.hash,
+    self.firstName.hash,
+    self.middleName.hash,
+    self.lastName.hash,
+    self.name.hash,
+    self.linkURL.hash,
+    self.refreshDate.hash
   };
   return [FBSDKMath hashWithIntegerArray:subhashes count:sizeof(subhashes) / sizeof(subhashes[0])];
 }
@@ -156,7 +141,7 @@ static FBSDKProfile *g_currentProfile;
   if (self == object) {
     return YES;
   }
-  if (![object isKindOfClass:[FBSDKProfile class]]){
+  if (![object isKindOfClass:[FBSDKProfile class]]) {
     return NO;
   }
   return [self isEqualToProfile:object];
@@ -164,22 +149,23 @@ static FBSDKProfile *g_currentProfile;
 
 - (BOOL)isEqualToProfile:(FBSDKProfile *)profile
 {
-  return ([_userID isEqualToString:profile.userID] &&
-          [_firstName isEqualToString:profile.firstName] &&
-          [_middleName isEqualToString:profile.middleName] &&
-          [_lastName isEqualToString:profile.lastName] &&
-          [_name isEqualToString:profile.name] &&
-          [_linkURL isEqual:profile.linkURL] &&
-          [_refreshDate isEqualToDate:profile.refreshDate]);
+  return ([_userID isEqualToString:profile.userID]
+    && [_firstName isEqualToString:profile.firstName]
+    && [_middleName isEqualToString:profile.middleName]
+    && [_lastName isEqualToString:profile.lastName]
+    && [_name isEqualToString:profile.name]
+    && [_linkURL isEqual:profile.linkURL]
+    && [_refreshDate isEqualToDate:profile.refreshDate]);
 }
-#pragma mark NSCoding
+
+ #pragma mark NSCoding
 
 + (BOOL)supportsSecureCoding
 {
   return YES;
 }
 
-- (id)initWithCoder:(NSCoder *)decoder
+- (instancetype)initWithCoder:(NSCoder *)decoder
 {
   NSString *userID = [decoder decodeObjectOfClass:[NSString class] forKey:FBSDKPROFILE_USERID_KEY];
   NSString *firstName = [decoder decodeObjectOfClass:[NSString class] forKey:FBSDKPROFILE_FIRSTNAME_KEY];
@@ -208,61 +194,13 @@ static FBSDKProfile *g_currentProfile;
   [encoder encodeObject:self.refreshDate forKey:FBSDKPROFILE_REFRESHDATE_KEY];
 }
 
-#pragma mark - Private
-
-+ (void)loadProfileWithToken:(FBSDKAccessToken *)token completion:(void (^)(FBSDKProfile *, NSError *))completion
-{
-  static FBSDKGraphRequestConnection *executingRequestConnection = nil;
-
-  BOOL isStale = [[NSDate date] timeIntervalSinceDate:g_currentProfile.refreshDate] > FBSDKPROFILE_STALE_IN_SECONDS;
-  if (token &&
-      (isStale || ![g_currentProfile.userID isEqualToString:token.userID])) {
-    FBSDKProfile *expectedCurrentProfile = g_currentProfile;
-
-    NSString *graphPath = @"me?fields=id,first_name,middle_name,last_name,name,link";
-    [executingRequestConnection cancel];
-    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:graphPath
-                                                                   parameters:nil
-                                                                        flags:FBSDKGraphRequestFlagDoNotInvalidateTokenOnError | FBSDKGraphRequestFlagDisableErrorRecovery];
-    executingRequestConnection = [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-      if (expectedCurrentProfile != g_currentProfile) {
-        // current profile has already changed since request was started. Let's not overwrite.
-        if (completion != NULL) {
-          completion(nil, nil);
-        }
-        return;
-      }
-      FBSDKProfile *profile = nil;
-      if (!error) {
-        profile = [[FBSDKProfile alloc] initWithUserID:result[@"id"]
-                                             firstName:result[@"first_name"]
-                                            middleName:result[@"middle_name"]
-                                              lastName:result[@"last_name"]
-                                                  name:result[@"name"]
-                                               linkURL:[NSURL URLWithString:result[@"link"]]
-                                           refreshDate:[NSDate date]];
-      }
-      [[self class] setCurrentProfile:profile];
-      if (completion != NULL) {
-        completion(profile, error);
-      }
-    }];
-  } else if (completion != NULL) {
-    completion(g_currentProfile, nil);
-  }
-}
-
-+ (void)observeChangeAccessTokenChange:(NSNotification *)notification
-{
-  FBSDKAccessToken *token = notification.userInfo[FBSDKAccessTokenChangeNewKey];
-  [self loadProfileWithToken:token completion:NULL];
-}
-
 @end
 
-@implementation FBSDKProfile(Internal)
+@implementation FBSDKProfile (Internal)
 
-+ (void)cacheProfile:(FBSDKProfile *) profile
+ #pragma clang diagnostic push
+ #pragma clang diagnostic ignored "-Wdeprecated-declarations"
++ (void)cacheProfile:(FBSDKProfile *)profile
 {
   NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
   if (profile) {
@@ -288,4 +226,131 @@ static FBSDKProfile *g_currentProfile;
   return nil;
 }
 
++ (NSURL *)imageURLForProfileID:(NSString *)profileId
+                    PictureMode:(FBSDKProfilePictureMode)mode
+                           size:(CGSize)size
+{
+  NSString *const accessTokenKey = @"access_token";
+  NSString *const pictureModeKey = @"type";
+  NSString *const widthKey = @"width";
+  NSString *const heightKey = @"height";
+
+  NSString *type;
+  switch (mode) {
+    case FBSDKProfilePictureModeNormal: type = @"normal"; break;
+    case FBSDKProfilePictureModeSquare: type = @"square"; break;
+    case FBSDKProfilePictureModeSmall: type = @"small"; break;
+    case FBSDKProfilePictureModeAlbum: type = @"album"; break;
+    case FBSDKProfilePictureModeLarge: type = @"large"; break;
+    default: type = @"normal";
+  }
+
+  NSMutableDictionary *queryParameters = [NSMutableDictionary dictionary];
+  [FBSDKTypeUtility dictionary:queryParameters setObject:type forKey:pictureModeKey];
+  [FBSDKTypeUtility dictionary:queryParameters setObject:@(roundf(size.width)) forKey:widthKey];
+  [FBSDKTypeUtility dictionary:queryParameters setObject:@(roundf(size.height)) forKey:heightKey];
+
+  if (FBSDKAccessToken.currentAccessToken) {
+    [FBSDKTypeUtility dictionary:queryParameters setObject:FBSDKAccessToken.currentAccessToken.tokenString forKey:accessTokenKey];
+  } else if (FBSDKSettings.clientToken) {
+    [FBSDKTypeUtility dictionary:queryParameters setObject:FBSDKSettings.clientToken forKey:accessTokenKey];
+  } else {
+    NSLog(@"As of Graph API v8.0, profile images may not be retrieved without an access token. This can be the current access token from logging in with Facebook or it can be set via the plist or in code. Providing neither will cause this call to return a silhouette image.");
+  }
+
+  NSString *path = [NSString stringWithFormat:@"%@/picture", profileId];
+
+  return [FBSDKInternalUtility facebookURLWithHostPrefix:@"graph"
+                                                    path:path
+                                         queryParameters:queryParameters
+                                                   error:NULL];
+}
+
++ (void)loadProfileWithToken:(FBSDKAccessToken *)token completion:(FBSDKProfileBlock)completion
+{
+  NSString *graphPath = @"me?fields=id,first_name,middle_name,last_name,name,link";
+
+  FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:graphPath
+                                                                 parameters:nil
+                                                                      flags:FBSDKGraphRequestFlagDoNotInvalidateTokenOnError | FBSDKGraphRequestFlagDisableErrorRecovery];
+  [[self class] loadProfileWithToken:token completion:completion graphRequest:request];
+}
+
++ (void)loadProfileWithToken:(FBSDKAccessToken *)token
+                  completion:(FBSDKProfileBlock)completion
+                graphRequest:(FBSDKGraphRequest *)request
+{
+  FBSDKParseProfileBlock parseBlock = ^void (id result, FBSDKProfile **profileRef) {
+    if (profileRef == NULL
+        || result == nil
+        || result[@"id"] == nil
+        || ((NSString *) result[@"id"]).length == 0) {
+      return;
+    }
+    FBSDKProfile *profile = [[FBSDKProfile alloc] initWithUserID:result[@"id"]
+                                                       firstName:result[@"first_name"]
+                                                      middleName:result[@"middle_name"]
+                                                        lastName:result[@"last_name"]
+                                                            name:result[@"name"]
+                                                         linkURL:[NSURL URLWithString:result[@"link"]]
+                                                     refreshDate:[NSDate date]];
+    *profileRef = [profile copy];
+  };
+  [[self class] loadProfileWithToken:token completion:completion graphRequest:request parseBlock:parseBlock];
+}
+
++ (void)loadProfileWithToken:(FBSDKAccessToken *)token
+                  completion:(FBSDKProfileBlock)completion
+                graphRequest:(FBSDKGraphRequest *)request
+                  parseBlock:(FBSDKParseProfileBlock)parseBlock;
+{
+  static FBSDKGraphRequestConnection *executingRequestConnection = nil;
+
+  BOOL isStale = [[NSDate date] timeIntervalSinceDate:g_currentProfile.refreshDate] > FBSDKPROFILE_STALE_IN_SECONDS;
+  if (token
+      && (isStale || ![g_currentProfile.userID isEqualToString:token.userID])) {
+    FBSDKProfile *expectedCurrentProfile = g_currentProfile;
+
+    [executingRequestConnection cancel];
+    executingRequestConnection = [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+      if (expectedCurrentProfile != g_currentProfile) {
+        // current profile has already changed since request was started. Let's not overwrite.
+        if (completion != NULL) {
+          completion(nil, nil);
+        }
+        return;
+      }
+      FBSDKProfile *profile = nil;
+      if (!error) {
+        parseBlock(result, &profile);
+      }
+      [[self class] setCurrentProfile:profile];
+      if (completion != NULL) {
+        completion(profile, error);
+      }
+    }];
+  } else if (completion != NULL) {
+    completion(g_currentProfile, nil);
+  }
+}
+
++ (void)observeChangeAccessTokenChange:(NSNotification *)notification
+{
+  FBSDKAccessToken *token = notification.userInfo[FBSDKAccessTokenChangeNewKey];
+  [self loadProfileWithToken:token completion:NULL];
+}
+
+ #pragma clang diagnostic pop
+
 @end
+
+@implementation FBSDKProfile (Testing)
+
++ (void)resetCurrentProfileCache
+{
+  g_currentProfile = nil;
+}
+
+@end
+
+#endif

@@ -16,10 +16,24 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import <FBSDKCoreKit/FBSDKGraphRequestConnection.h>
+@class FBSDKURLSession;
 
-@interface FBSDKGraphRequestConnection(Internal)
+#if SWIFT_PACKAGE
+ #import "FBSDKGraphRequestConnection.h"
+#else
+ #import <FBSDKCoreKit/FBSDKGraphRequestConnection.h>
+#endif
+
+@interface FBSDKGraphRequestConnection (Internal)
 
 @property (nonatomic, readonly) NSMutableArray *requests;
+@property (nonatomic, strong) FBSDKURLSession *session;
+
+/**
+ Get the graph request url for a single graph request
+ @param request The Graph Request we need the url for
+ @param forBatch whether the request is a batch request.
+ */
+- (NSString *)urlStringForSingleRequest:(FBSDKGraphRequest *)request forBatch:(BOOL)forBatch;
 
 @end

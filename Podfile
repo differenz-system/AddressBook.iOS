@@ -6,7 +6,7 @@ target 'AddressBook' do
   use_frameworks!
 
   # Pods for AddressBook
-  pod 'Alamofire', '~> 4.6'
+  pod 'Alamofire', '~> 5.0'
   pod 'IQKeyboardManagerSwift'
   pod 'SVProgressHUD'
   pod 'FBSDKLoginKit'

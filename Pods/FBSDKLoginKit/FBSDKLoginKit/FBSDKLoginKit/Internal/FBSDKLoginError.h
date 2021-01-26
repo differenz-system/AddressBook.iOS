@@ -16,20 +16,30 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
+#import "TargetConditionals.h"
 
-#import <FBSDKLoginKit/FBSDKLoginConstants.h>
+#if !TARGET_OS_TV
 
-@interface FBSDKLoginError : NSObject
+ #import <Foundation/Foundation.h>
 
-+ (NSString *)errorDomain;
+ #if SWIFT_PACKAGE
+  #import "FBSDKLoginConstants.h"
+ #else
+  #import <FBSDKLoginKit/FBSDKLoginConstants.h>
+ #endif
 
-+ (NSError *)errorForFailedLoginWithCode:(FBSDKLoginErrorCode)code;
+NS_ASSUME_NONNULL_BEGIN
 
-+ (NSError *)errorForSystemAccountStoreError:(NSError *)accountStoreError;
-+ (NSError *)errorForSystemPasswordChange:(NSError *)innerError;
+@interface NSError (FBSDKLoginError)
 
-+ (NSError *)errorFromReturnURLParameters:(NSDictionary *)parameters;
-+ (NSError *)errorFromServerError:(NSError *)serverError;
++ (NSError *)fbErrorForFailedLoginWithCode:(FBSDKLoginError)code;
++ (NSError *)fbErrorForSystemPasswordChange:(NSError *)innerError;
+
++ (nullable NSError *)fbErrorFromReturnURLParameters:(NSDictionary<NSString *, id> *)parameters;
++ (nullable NSError *)fbErrorFromServerError:(NSError *)serverError;
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#endif

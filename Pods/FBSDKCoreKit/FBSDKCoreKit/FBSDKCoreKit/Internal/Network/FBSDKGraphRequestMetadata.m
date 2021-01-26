@@ -19,14 +19,13 @@
 #import "FBSDKGraphRequestMetadata.h"
 
 #import "FBSDKGraphRequest.h"
-#import "FBSDKMacros.h"
 
 @implementation FBSDKGraphRequestMetadata
 
 - (instancetype)initWithRequest:(FBSDKGraphRequest *)request
-              completionHandler:(FBSDKGraphRequestHandler)handler
-                batchParameters:(NSDictionary *)batchParameters {
-
+              completionHandler:(FBSDKGraphRequestBlock)handler
+                batchParameters:(NSDictionary *)batchParameters
+{
   if ((self = [super init])) {
     _request = request;
     _batchParameters = [batchParameters copy];
@@ -35,15 +34,10 @@
   return self;
 }
 
-- (instancetype)init
-{
-  FBSDK_NOT_DESIGNATED_INITIALIZER(initWithRequest:completionHandler:batchParameters:);
-  return [self initWithRequest:nil completionHandler:NULL batchParameters:nil];
-}
-
 - (void)invokeCompletionHandlerForConnection:(FBSDKGraphRequestConnection *)connection
                                  withResults:(id)results
-                                       error:(NSError *)error {
+                                       error:(NSError *)error
+{
   if (self.completionHandler) {
     self.completionHandler(connection, results, error);
   }

@@ -4,13 +4,21 @@
 This repository contains **Address Book** application for iOS that shows design & coding practices followed by **[Differenz System](http://www.differenzsystem.com/)**.
 
 The app does the following:
-1. **Login:** User can login via facebook or email/password. 
-2. **Home:** It will list all the save contacts, having the option to add a new contact on the top right.
-3. **Create new contact:** User can add a new contact to his address book by filling details here.
+1. **Login:** 
+    - User can login via facebook or email/password. 
+2. **Home:** 
+    - It will list all the saved contacts. 
+    - It has the option to add a new contact on the top right.
+    - Contact can be deleted by swiping card to left and clicking on trash icon.
+    - User can edit contact by tapping on contact.
+3. **Create new contact:** 
+    - User can add a new contact to his address book by filling details here.
+4. **Dark/Light Mode:** 
+    - App supports Light & Dark mode, user can change mode by going into device dark mode settings.
 
 ## Pre-requisites
-- [Xcode 9](https://developer.apple.com/library/content/releasenotes/DeveloperTools/RN-Xcode/Chapters/Introduction.html#//apple_ref/doc/uid/TP40001051-CH1-SW936) or above
-- iOS device or emulator running iOS 8.2 or above
+- [Xcode 12.0](https://apps.apple.com/us/app/xcode/id497799835?mt=12) or above
+- iOS device or emulator running iOS 12 or above
 
 ## Getting Started
 1. [Install Xcode](https://developer.apple.com/xcode/)

@@ -1,33 +1,40 @@
 PODS:
-  - Alamofire (4.6.0)
-  - Bolts (1.9.0):
-    - Bolts/AppLinks (= 1.9.0)
-    - Bolts/Tasks (= 1.9.0)
-  - Bolts/AppLinks (1.9.0):
-    - Bolts/Tasks
-  - Bolts/Tasks (1.9.0)
-  - FBSDKCoreKit (4.30.0):
-    - Bolts (~> 1.7)
-  - FBSDKLoginKit (4.30.0):
-    - FBSDKCoreKit
-  - IQKeyboardManagerSwift (5.0.0)
-  - SVProgressHUD (2.2.1)
+  - Alamofire (5.4.1)
+  - FBSDKCoreKit (8.2.0):
+    - FBSDKCoreKit/Basics (= 8.2.0)
+    - FBSDKCoreKit/Core (= 8.2.0)
+  - FBSDKCoreKit/Basics (8.2.0)
+  - FBSDKCoreKit/Core (8.2.0):
+    - FBSDKCoreKit/Basics
+  - FBSDKLoginKit (8.2.0):
+    - FBSDKLoginKit/Login (= 8.2.0)
+  - FBSDKLoginKit/Login (8.2.0):
+    - FBSDKCoreKit (~> 8.2.0)
+  - IQKeyboardManagerSwift (6.5.6)
+  - SVProgressHUD (2.2.5)
 
 DEPENDENCIES:
-  - Alamofire (~> 4.6)
+  - Alamofire (~> 5.0)
   - FBSDKCoreKit
   - FBSDKLoginKit
   - IQKeyboardManagerSwift
   - SVProgressHUD
 
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - FBSDKCoreKit
+    - FBSDKLoginKit
+    - IQKeyboardManagerSwift
+    - SVProgressHUD
+
 SPEC CHECKSUMS:
-  Alamofire: f41a599bd63041760b26d393ec1069d9d7b917f4
-  Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
-  FBSDKCoreKit: 7c4bba2877781a131ab5d54c0a78c405d4307b62
-  FBSDKLoginKit: fe7a7e82373dc5daad92e1623219e86224ab1fb1
-  IQKeyboardManagerSwift: 3f340202ebe1a7076279b9b9b3c817243ddb3aab
-  SVProgressHUD: db27c54e6e18bc903341661fc9feb55e04905cc4
+  Alamofire: 2291f7d21ca607c491dd17642e5d40fdcda0e65c
+  FBSDKCoreKit: 4afd6ff53d8133a433dbcda44451c9498f8c6ce4
+  FBSDKLoginKit: 7181765f2524d7ebf82d9629066c8e6caafc99d0
+  IQKeyboardManagerSwift: c7df9d2deb356c04522f5c4b7b6e4ce4d8ed94fe
+  SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
 
-PODFILE CHECKSUM: 2b6ba71a86eb4b6be85e6c48d73a540ebcd77d46
+PODFILE CHECKSUM: 3e66172660344e434f395e7024b42de9369808fc
 
-COCOAPODS: 1.2.1
+COCOAPODS: 1.10.0

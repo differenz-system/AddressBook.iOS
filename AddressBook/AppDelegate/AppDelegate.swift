@@ -2,8 +2,8 @@
 //  AppDelegate.swift
 //  AddressBook
 //
-//  Created by MohiniPatel on 9/20/17.
-//  Copyright © 2017 Differenz System. All rights reserved.
+//  Created by DifferenzSystem PVT. LTD. on 01/19/2021.
+//  Copyright © 2021 Differenz System. All rights reserved.
 //
 
 import UIKit
@@ -20,22 +20,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var frontNavigationController: UINavigationController?
     var vc : UIViewController?
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
         //Setup RootViewController
         self.setupRootView()
         
         //FaceBook login
-        FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
+        ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
         
-        IQKeyboardManager.sharedManager().enable = true
+        IQKeyboardManager.shared.enable = true
         //self.setSVProgressHUDconfiguration()
         return true
     }
     
-    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-        let facebookHandler = FBSDKApplicationDelegate.sharedInstance().application(app, open: url, options: options)
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        let facebookHandler = ApplicationDelegate.shared.application(app, open: url, options: options)
         return facebookHandler
     }
     

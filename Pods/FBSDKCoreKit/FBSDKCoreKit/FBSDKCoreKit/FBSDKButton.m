@@ -20,11 +20,10 @@
 #import "FBSDKButton+Subclass.h"
 
 #import "FBSDKAccessToken.h"
-#import "FBSDKAppEvents+Internal.h"
 #import "FBSDKAppEvents.h"
+#import "FBSDKAppEvents+Internal.h"
 #import "FBSDKApplicationDelegate+Internal.h"
 #import "FBSDKLogo.h"
-#import "FBSDKMath.h"
 #import "FBSDKUIUtility.h"
 #import "FBSDKViewImpressionTracker.h"
 
@@ -76,7 +75,7 @@
 
 - (CGRect)imageRectForContentRect:(CGRect)contentRect
 {
-  if ([self isHidden] || CGRectIsEmpty(self.bounds)) {
+  if (self.hidden || CGRectIsEmpty(self.bounds)) {
     return CGRectZero;
   }
   CGRect imageRect = UIEdgeInsetsInsetRect(contentRect, self.imageEdgeInsets);
@@ -101,9 +100,9 @@
 {
   // automatic impression tracking if the button conforms to FBSDKButtonImpressionTracking
   if ([self conformsToProtocol:@protocol(FBSDKButtonImpressionTracking)]) {
-    NSString *eventName = [(id<FBSDKButtonImpressionTracking>)self impressionTrackingEventName];
-    NSString *identifier = [(id<FBSDKButtonImpressionTracking>)self impressionTrackingIdentifier];
-    NSDictionary *parameters = [(id<FBSDKButtonImpressionTracking>)self analyticsParameters];
+    NSString *eventName = ((id<FBSDKButtonImpressionTracking>)self).impressionTrackingEventName;
+    NSString *identifier = ((id<FBSDKButtonImpressionTracking>)self).impressionTrackingIdentifier;
+    NSDictionary<NSString *, id> *parameters = ((id<FBSDKButtonImpressionTracking>)self).analyticsParameters;
     if (eventName && identifier) {
       FBSDKViewImpressionTracker *impressionTracker = [FBSDKViewImpressionTracker impressionTrackerWithEventName:eventName];
       [impressionTracker logImpressionWithIdentifier:identifier parameters:parameters];
@@ -114,7 +113,7 @@
 
 - (CGSize)sizeThatFits:(CGSize)size
 {
-  if ([self isHidden]) {
+  if (self.hidden) {
     return CGSizeZero;
   }
   CGSize normalSize = [self sizeThatFits:size title:[self titleForState:UIControlStateNormal]];
@@ -131,7 +130,7 @@
 
 - (CGRect)titleRectForContentRect:(CGRect)contentRect
 {
-  if ([self isHidden] || CGRectIsEmpty(self.bounds)) {
+  if (self.hidden || CGRectIsEmpty(self.bounds)) {
     return CGRectZero;
   }
   CGRect imageRect = [self imageRectForContentRect:contentRect];
@@ -148,10 +147,12 @@
       // to keep the text centered in the button without adding extra blank space to the right when unnecessary
       // 1. the text fits centered within the button without colliding with the image (imagePaddingWidth)
       // 2. the text would run into the image, so adjust the insets to effectively left align it (textPaddingWidth)
-      CGSize titleSize = FBSDKTextSize(titleLabel.text,
-                                       titleLabel.font,
-                                       titleRect.size,
-                                       titleLabel.lineBreakMode);
+      CGSize titleSize = FBSDKTextSize(
+        titleLabel.text,
+        titleLabel.font,
+        titleRect.size,
+        titleLabel.lineBreakMode
+      );
       CGFloat titlePaddingWidth = (CGRectGetWidth(titleRect) - titleSize.width) / 2;
       CGFloat imagePaddingWidth = titleX / 2;
       CGFloat inset = MIN(titlePaddingWidth, imagePaddingWidth);
@@ -166,17 +167,17 @@
 
 - (void)logTapEventWithEventName:(NSString *)eventName parameters:(NSDictionary *)parameters
 {
-    [FBSDKAppEvents logImplicitEvent:eventName
-                          valueToSum:nil
-                          parameters:parameters
-                         accessToken:[FBSDKAccessToken currentAccessToken]];
+  [FBSDKAppEvents logInternalEvent:eventName
+                        parameters:parameters
+                isImplicitlyLogged:YES
+                       accessToken:[FBSDKAccessToken currentAccessToken]];
 }
 
 - (void)checkImplicitlyDisabled
 {
-  BOOL enabled = !_isExplicitlyDisabled && ![self isImplicitlyDisabled];
-  BOOL currentEnabled = [self isEnabled];
-  [super setEnabled:enabled];
+  BOOL enabled = !_isExplicitlyDisabled && !self.implicitlyDisabled;
+  BOOL currentEnabled = self.enabled;
+  super.enabled = enabled;
   if (currentEnabled != enabled) {
     [self invalidateIntrinsicContentSize];
     [self setNeedsLayout];
@@ -185,10 +186,10 @@
 
 - (void)configureButton
 {
-  [self configureWithIcon:[[self class] defaultIcon]
+  [self configureWithIcon:[self defaultIcon]
                     title:nil
-          backgroundColor:[[self class] defaultBackgroundColor]
-         highlightedColor:[[self class] defaultHighlightedColor]];
+          backgroundColor:[self defaultBackgroundColor]
+         highlightedColor:[self defaultHighlightedColor]];
 }
 
 - (void)configureWithIcon:(FBSDKIcon *)icon
@@ -197,48 +198,42 @@
          highlightedColor:(UIColor *)highlightedColor
 {
   [self _configureWithIcon:icon
-                     title:title
-           backgroundColor:backgroundColor
-          highlightedColor:highlightedColor
-             selectedTitle:nil
-              selectedIcon:nil
-             selectedColor:nil
-  selectedHighlightedColor:nil];
+                      title:title
+            backgroundColor:backgroundColor
+           highlightedColor:highlightedColor
+              selectedTitle:nil
+               selectedIcon:nil
+              selectedColor:nil
+   selectedHighlightedColor:nil];
 }
 
-- (void)configureWithIcon:(FBSDKIcon *)icon
-                    title:(NSString *)title
-          backgroundColor:(UIColor *)backgroundColor
-         highlightedColor:(UIColor *)highlightedColor
-            selectedTitle:(NSString *)selectedTitle
-             selectedIcon:(FBSDKIcon *)selectedIcon
-            selectedColor:(UIColor *)selectedColor
- selectedHighlightedColor:(UIColor *)selectedHighlightedColor
+- (void) configureWithIcon:(FBSDKIcon *)icon
+                     title:(NSString *)title
+           backgroundColor:(UIColor *)backgroundColor
+          highlightedColor:(UIColor *)highlightedColor
+             selectedTitle:(NSString *)selectedTitle
+              selectedIcon:(FBSDKIcon *)selectedIcon
+             selectedColor:(UIColor *)selectedColor
+  selectedHighlightedColor:(UIColor *)selectedHighlightedColor
 {
-  if (!selectedColor) {
-    selectedColor = [self defaultSelectedColor];
-  }
-  if (!selectedHighlightedColor) {
-    selectedHighlightedColor = highlightedColor;
-  }
   [self _configureWithIcon:icon
-                     title:title
-           backgroundColor:backgroundColor
-          highlightedColor:highlightedColor
-             selectedTitle:selectedTitle
-              selectedIcon:selectedIcon
-             selectedColor:selectedColor
-  selectedHighlightedColor:selectedHighlightedColor];
+                      title:title
+            backgroundColor:backgroundColor
+           highlightedColor:highlightedColor
+              selectedTitle:selectedTitle
+               selectedIcon:selectedIcon
+              selectedColor:selectedColor
+   selectedHighlightedColor:selectedHighlightedColor];
 }
 
 - (UIColor *)defaultBackgroundColor
 {
-  return [UIColor colorWithRed:65.0/255.0 green:93.0/255.0 blue:174.0/255.0 alpha:1.0];
+  return [UIColor colorWithRed:24.0 / 255.0 green:119.0 / 255.0 blue:242.0 / 255.0 alpha:1.0];
 }
 
 - (UIColor *)defaultDisabledColor
 {
-  return [UIColor colorWithRed:189.0/255.0 green:193.0/255.0 blue:201.0/255.0 alpha:1.0];
+  return [UIColor colorWithRed:189.0 / 255.0 green:193.0 / 255.0 blue:201.0 / 255.0 alpha:1.0];
 }
 
 - (UIFont *)defaultFont
@@ -248,7 +243,7 @@
 
 - (UIColor *)defaultHighlightedColor
 {
-  return [UIColor colorWithRed:47.0/255.0 green:71.0/255.0 blue:122.0/255.0 alpha:1.0];
+  return [UIColor colorWithRed:21.0 / 255.0 green:105.0 / 255.0 blue:214.0 / 255.0 alpha:1.0];
 }
 
 - (FBSDKIcon *)defaultIcon
@@ -258,7 +253,12 @@
 
 - (UIColor *)defaultSelectedColor
 {
-  return [UIColor colorWithRed:124.0/255.0 green:143.0/255.0 blue:200.0/255.0 alpha:1.0];
+  return [self defaultBackgroundColor];
+}
+
+- (UIColor *)highlightedContentColor
+{
+  return [UIColor colorWithRed:218.0 / 255.0 green:221.0 / 255.0 blue:226.0 / 255.0 alpha:1.0];
 }
 
 - (BOOL)isImplicitlyDisabled
@@ -333,11 +333,20 @@
   if (!icon) {
     icon = [self defaultIcon];
   }
+  if (!selectedIcon) {
+    selectedIcon = [self defaultIcon];
+  }
   if (!backgroundColor) {
     backgroundColor = [self defaultBackgroundColor];
   }
   if (!highlightedColor) {
     highlightedColor = [self defaultHighlightedColor];
+  }
+  if (!selectedColor) {
+    selectedColor = [self defaultSelectedColor];
+  }
+  if (!selectedHighlightedColor) {
+    selectedHighlightedColor = highlightedColor;
   }
 
   self.adjustsImageWhenDisabled = NO;
@@ -371,12 +380,13 @@
   if (selectedHighlightedColor) {
     backgroundImage = [self _backgroundImageWithColor:selectedHighlightedColor cornerRadius:3.0 scale:scale];
     [self setBackgroundImage:backgroundImage forState:UIControlStateSelected | UIControlStateHighlighted];
-#if TARGET_OS_TV
+  #if TARGET_OS_TV
     [self setBackgroundImage:backgroundImage forState:UIControlStateSelected | UIControlStateFocused];
-#endif
+  #endif
   }
 
   [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+  [self setTitleColor:[self highlightedContentColor] forState:UIControlStateHighlighted | UIControlStateSelected];
 
   [self setTitle:title forState:UIControlStateNormal];
 #if TARGET_OS_TV
@@ -385,9 +395,9 @@
   if (selectedTitle) {
     [self setTitle:selectedTitle forState:UIControlStateSelected];
     [self setTitle:selectedTitle forState:UIControlStateSelected | UIControlStateHighlighted];
-#if TARGET_OS_TV
+  #if TARGET_OS_TV
     [self setTitle:selectedTitle forState:UIControlStateSelected | UIControlStateFocused];
-#endif
+  #endif
   }
 
   UILabel *titleLabel = self.titleLabel;
@@ -409,9 +419,9 @@
                                                   resizingMode:UIImageResizingModeStretch];
     [self setImage:selectedImage forState:UIControlStateSelected];
     [self setImage:selectedImage forState:UIControlStateSelected | UIControlStateHighlighted];
-#if TARGET_OS_TV
+  #if TARGET_OS_TV
     [self setImage:selectedImage forState:UIControlStateSelected | UIControlStateFocused];
-#endif
+  #endif
   }
 
   if (forceSizeToFit) {

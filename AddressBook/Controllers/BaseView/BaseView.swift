@@ -2,8 +2,8 @@
 //  BaseView.swift
 //  AddressBook
 //
-//  Created by MohiniPatel on 9/20/17.
-//  Copyright © 2017 Differenz System. All rights reserved.
+//  Created by DifferenzSystem PVT. LTD. on 01/19/2021.
+//  Copyright © 2021 DifferenzSystem PVT. LTD. All rights reserved.
 //
 
 import UIKit
@@ -20,6 +20,8 @@ class BaseView: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    
     
     //MARK: - Instance methods
     
@@ -43,7 +45,8 @@ class BaseView: UIViewController {
     
     func setLeftNavigationItem(withImage image: UIImage?, action: Selector) {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: action)
-        //self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "title", style: .plain, target: self, action: action)
+        
+        
     }
     
     /**
@@ -56,15 +59,5 @@ class BaseView: UIViewController {
     func setRightNavigationItem(with title: String, action: Selector) {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: title, style: .plain, target: self, action: action)
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

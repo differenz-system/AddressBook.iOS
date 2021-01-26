@@ -16,14 +16,19 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import "FBSDKProfilePictureView.h"
+#import "TargetConditionals.h"
 
-#import "FBSDKAccessToken.h"
-#import "FBSDKInternalUtility.h"
-#import "FBSDKMaleSilhouetteIcon.h"
-#import "FBSDKMath.h"
-#import "FBSDKURLConnection.h"
-#import "FBSDKUtility.h"
+#if !TARGET_OS_TV
+
+ #import "FBSDKProfilePictureView.h"
+ #import "FBSDKProfilePictureView+Internal.h"
+
+ #import "FBSDKAccessToken.h"
+ #import "FBSDKInternalUtility.h"
+ #import "FBSDKMaleSilhouetteIcon.h"
+ #import "FBSDKMath.h"
+ #import "FBSDKProfile+Internal.h"
+ #import "FBSDKUtility.h"
 
 @interface FBSDKProfilePictureViewState : NSObject
 
@@ -33,11 +38,11 @@
                       pictureMode:(FBSDKProfilePictureMode)pictureMode
                    imageShouldFit:(BOOL)imageShouldFit;
 
-@property (nonatomic, assign, readonly) BOOL imageShouldFit;
-@property (nonatomic, assign, readonly) FBSDKProfilePictureMode pictureMode;
-@property (nonatomic, copy, readonly) NSString *profileID;
-@property (nonatomic, assign, readonly) CGFloat scale;
-@property (nonatomic, assign, readonly) CGSize size;
+@property (nonatomic, readonly, assign) BOOL imageShouldFit;
+@property (nonatomic, readonly, assign) FBSDKProfilePictureMode pictureMode;
+@property (nonatomic, readonly, copy) NSString *profileID;
+@property (nonatomic, readonly, assign) CGFloat scale;
+@property (nonatomic, readonly, assign) CGSize size;
 
 - (BOOL)isEqualToState:(FBSDKProfilePictureViewState *)other;
 - (BOOL)isValidForState:(FBSDKProfilePictureViewState *)other;
@@ -70,7 +75,7 @@
     (NSUInteger)_size.height,
     (NSUInteger)_scale,
     (NSUInteger)_pictureMode,
-    [_profileID hash],
+    _profileID.hash,
   };
   return [FBSDKMath hashWithIntegerArray:subhashes count:sizeof(subhashes) / sizeof(subhashes[0])];
 }
@@ -86,17 +91,17 @@
 
 - (BOOL)isEqualToState:(FBSDKProfilePictureViewState *)other
 {
-  return ([self isValidForState:other] &&
-          CGSizeEqualToSize(_size, other->_size) &&
-          (_scale == other->_scale));
+  return ([self isValidForState:other]
+    && CGSizeEqualToSize(_size, other->_size)
+    && (_scale == other->_scale));
 }
 
 - (BOOL)isValidForState:(FBSDKProfilePictureViewState *)other
 {
-  return (other != nil &&
-          (_imageShouldFit == other->_imageShouldFit) &&
-          (_pictureMode == other->_pictureMode) &&
-          [FBSDKInternalUtility object:_profileID isEqualToObject:other->_profileID]);
+  return (other != nil
+    && (_imageShouldFit == other->_imageShouldFit)
+    && (_pictureMode == other->_pictureMode)
+    && [FBSDKInternalUtility object:_profileID isEqualToObject:other->_profileID]);
 }
 
 @end
@@ -110,22 +115,38 @@
   BOOL _placeholderImageIsValid;
 }
 
-#pragma mark - Object Lifecycle
+ #pragma mark - Object Lifecycle
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if ((self = [super initWithFrame:frame])) {
-    [self _configureProfilePictureView];
+    [self configureProfilePictureView];
   }
   return self;
 }
 
-- (id)initWithCoder:(NSCoder *)decoder
+- (instancetype)initWithCoder:(NSCoder *)decoder
 {
   if ((self = [super initWithCoder:decoder])) {
-    [self _configureProfilePictureView];
+    [self configureProfilePictureView];
   }
   return self;
+}
+
+- (instancetype)initWithFrame:(CGRect)frame
+                      profile:(FBSDKProfile *)profile
+{
+  if ((self = [super initWithFrame:frame])) {
+    _profileID = [profile.userID copy];
+
+    [self setNeedsImageUpdate];
+  }
+  return self;
+}
+
+- (instancetype)initWithProfile:(FBSDKProfile *)profile
+{
+  return [self initWithFrame:CGRectZero profile:profile];
 }
 
 - (void)dealloc
@@ -133,18 +154,20 @@
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#pragma mark - Properties
+ #pragma mark - Properties
 
 - (void)setBounds:(CGRect)bounds
 {
-  CGRect currentBounds = self.bounds;
-  if (!CGRectEqualToRect(currentBounds, bounds)) {
-    [super setBounds:bounds];
-    if (!CGSizeEqualToSize(currentBounds.size, bounds.size)) {
-      _placeholderImageIsValid = NO;
-      [self setNeedsImageUpdate];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    CGRect currentBounds = self.bounds;
+    if (!CGRectEqualToRect(currentBounds, bounds)) {
+      super.bounds = bounds;
+      if (!CGSizeEqualToSize(currentBounds.size, bounds.size)) {
+        self->_placeholderImageIsValid = NO;
+        [self setNeedsImageUpdate];
+      }
     }
-  }
+  });
 }
 
 - (UIViewContentMode)contentMode
@@ -156,7 +179,7 @@
 {
   if (_imageView.contentMode != contentMode) {
     _imageView.contentMode = contentMode;
-    [super setContentMode:contentMode];
+    super.contentMode = contentMode;
     [self setNeedsImageUpdate];
   }
 }
@@ -178,77 +201,33 @@
   }
 }
 
-#pragma mark - Public Methods
+ #pragma mark - Public Methods
 
 - (void)setNeedsImageUpdate
 {
-  if (!_imageView || CGRectIsEmpty(self.bounds)) {
-    // we can't do anything with an empty view, so just bail out until we have a size
-    return;
-  }
-
-  // ensure that we have an image.  do this here so we can draw the placeholder image synchronously if we don't have one
-  if (!_placeholderImageIsValid && !_hasProfileImage) {
-    [self _setPlaceholderImage];
-  }
-
-  // debounce calls to needsImage against the main runloop
-  if (_needsImageUpdate) {
-    return;
-  }
-  _needsImageUpdate = YES;
-  __weak FBSDKProfilePictureView *weakSelf = self;
   dispatch_async(dispatch_get_main_queue(), ^{
-    [weakSelf _needsImageUpdate];
+    if (!self->_imageView || CGRectIsEmpty(self.bounds)) {
+      // we can't do anything with an empty view, so just bail out until we have a size
+      return;
+    }
+
+    // ensure that we have an image.  do this here so we can draw the placeholder image synchronously if we don't have one
+    if (!self->_placeholderImageIsValid && !self->_hasProfileImage) {
+      [self _setPlaceholderImage];
+    }
+
+    // debounce calls to needsImage against the main runloop
+    if (self->_needsImageUpdate) {
+      return;
+    }
+    self->_needsImageUpdate = YES;
+    [self _needsImageUpdate];
   });
 }
 
-#pragma mark - Helper Methods
+ #pragma mark - Internal Methods
 
-+ (void)_downloadImageWithState:(FBSDKProfilePictureViewState *)state
-                completionBlock:(void(^)(NSData *data))completionBlock;
-{
-  NSURL *imageURL = [self _imageURLWithState:state];
-  if (!imageURL) {
-    return;
-  }
-  FBSDKURLConnectionHandler completionHandler = ^(FBSDKURLConnection *connection,
-                                                  NSError *error,
-                                                  NSURLResponse *response,
-                                                  NSData *responseData) {
-    if (!error && [responseData length]) {
-      completionBlock(responseData);
-    }
-  };
-  NSURLRequest *request = [[NSURLRequest alloc] initWithURL:imageURL];
-  [[[FBSDKURLConnection alloc] initWithRequest:request completionHandler:completionHandler] start];
-}
-
-+ (NSURL *)_imageURLWithState:(FBSDKProfilePictureViewState *)state
-{
-  FBSDKAccessToken *accessToken = [FBSDKAccessToken currentAccessToken];
-  if ([state.profileID isEqualToString:@"me"] && !accessToken) {
-    return nil;
-  }
-  NSString *path = [[NSString alloc] initWithFormat:@"/%@/picture", [FBSDKUtility URLEncode:state.profileID]];
-  CGSize size = state.size;
-  NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
-  parameters[@"width"] = @(size.width);
-  parameters[@"height"] = @(size.height);
-  [FBSDKInternalUtility dictionary:parameters setObject:accessToken.tokenString forKey:@"access_token"];
-  return [FBSDKInternalUtility facebookURLWithHostPrefix:@"graph" path:path queryParameters:parameters error:NULL];
-}
-
-- (void)_accessTokenDidChangeNotification:(NSNotification *)notification
-{
-  if (![_profileID isEqualToString:@"me"] || !notification.userInfo[FBSDKAccessTokenDidChangeUserID]) {
-    return;
-  }
-  _lastState = nil;
-  [self setNeedsImageUpdate];
-}
-
-- (void)_configureProfilePictureView
+- (void)configureProfilePictureView
 {
   _imageView = [[UIImageView alloc] initWithFrame:self.bounds];
   _imageView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
@@ -263,6 +242,17 @@
                                                name:FBSDKAccessTokenDidChangeNotification
                                              object:nil];
 
+  [self setNeedsImageUpdate];
+}
+
+ #pragma mark - Helper Methods
+
+- (void)_accessTokenDidChangeNotification:(NSNotification *)notification
+{
+  if (![_profileID isEqualToString:@"me"] || !notification.userInfo[FBSDKAccessTokenDidChangeUserIDKey]) {
+    return;
+  }
+  _lastState = nil;
   [self setNeedsImageUpdate];
 }
 
@@ -292,7 +282,7 @@
   // get the image size based on the contentMode and pictureMode
   CGSize size = self.bounds.size;
   switch (_pictureMode) {
-    case FBSDKProfilePictureModeSquare:{
+    case FBSDKProfilePictureModeSquare: {
       CGFloat imageSize;
       if (imageShouldFit) {
         imageSize = MIN(size.width, size.height);
@@ -303,6 +293,9 @@
       break;
     }
     case FBSDKProfilePictureModeNormal:
+    case FBSDKProfilePictureModeAlbum:
+    case FBSDKProfilePictureModeSmall:
+    case FBSDKProfilePictureModeLarge:
       // use the bounds size
       break;
   }
@@ -311,6 +304,15 @@
   size = CGSizeMake(size.width * scale, size.height * scale);
 
   return size;
+}
+
+- (NSURL *)_getProfileImageUrl:(FBSDKProfilePictureViewState *)state
+{
+  // If there's an existing profile, use that profile's image url handler
+  if (FBSDKProfile.currentProfile != nil) {
+    return [FBSDKProfile.currentProfile imageURLForPictureMode:self.pictureMode size:state.size];
+  }
+  return [FBSDKProfile imageURLForProfileID:state.profileID PictureMode:self.pictureMode size:state.size];
 }
 
 - (void)_needsImageUpdate
@@ -328,7 +330,7 @@
   // leave the current value until the new resolution image is downloaded
   BOOL imageShouldFit = [self _imageShouldFit];
   UIScreen *screen = self.window.screen ?: [UIScreen mainScreen];
-  CGFloat scale = [screen scale];
+  CGFloat scale = screen.scale;
   CGSize imageSize = [self _imageSize:imageShouldFit scale:scale];
   FBSDKProfilePictureViewState *state = [[FBSDKProfilePictureViewState alloc] initWithProfileID:_profileID
                                                                                            size:imageSize
@@ -340,18 +342,35 @@
   }
   _lastState = state;
 
+  FBSDKAccessToken *accessToken = [FBSDKAccessToken currentAccessToken];
+  if ([state.profileID isEqualToString:@"me"] && !accessToken) {
+    return;
+  }
+
   __weak FBSDKProfilePictureView *weakSelf = self;
-  [[self class] _downloadImageWithState:state completionBlock:^(NSData *data) {
-    [weakSelf _updateImageWithData:data state:state];
-  }];
+
+  NSURL *imageURL = [self _getProfileImageUrl:state];
+
+  NSURLRequest *request = [[NSURLRequest alloc] initWithURL:imageURL];
+  NSURLSession *session = [NSURLSession sharedSession];
+  [[session
+    dataTaskWithRequest:request
+    completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+      if (!error && data.length) {
+        [weakSelf _updateImageWithData:data state:state];
+      }
+    }] resume];
 }
 
 - (void)_setPlaceholderImage
 {
-  UIColor *fillColor = [UIColor colorWithRed:157.0/255.0 green:177.0/255.0 blue:204.0/255.0 alpha:1.0];
-  _imageView.image = [[[FBSDKMaleSilhouetteIcon alloc] initWithColor:fillColor] imageWithSize:_imageView.bounds.size];
+  UIColor *fillColor = [UIColor colorWithRed:157.0 / 255.0 green:177.0 / 255.0 blue:204.0 / 255.0 alpha:1.0];
   _placeholderImageIsValid = YES;
   _hasProfileImage = NO;
+
+  dispatch_async(dispatch_get_main_queue(), ^{
+    self->_imageView.image = [[[FBSDKMaleSilhouetteIcon alloc] initWithColor:fillColor] imageWithSize:self->_imageView.bounds.size];
+  });
 }
 
 - (void)_updateImageWithData:(NSData *)data state:(FBSDKProfilePictureViewState *)state
@@ -360,10 +379,13 @@
   if (![state isValidForState:_lastState]) {
     return;
   }
+
   UIImage *image = [[UIImage alloc] initWithData:data scale:state.scale];
   if (image) {
-    _imageView.image = image;
     _hasProfileImage = YES;
+    dispatch_async(dispatch_get_main_queue(), ^{
+      self->_imageView.image = image;
+    });
   } else {
     _hasProfileImage = NO;
     _placeholderImageIsValid = NO;
@@ -372,3 +394,5 @@
 }
 
 @end
+
+#endif

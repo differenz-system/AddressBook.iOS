@@ -18,8 +18,17 @@
 
 #import <UIKit/UIKit.h>
 
-#import <FBSDKLoginKit/FBSDKLoginButton.h>
-#import <FBSDKLoginKit/FBSDKLoginConstants.h>
-#import <FBSDKLoginKit/FBSDKLoginManager.h>
-#import <FBSDKLoginKit/FBSDKLoginManagerLoginResult.h>
-#import <FBSDKLoginKit/FBSDKLoginTooltipView.h>
+#import "FBSDKCoreKitImport.h"
+#import "FBSDKDeviceLoginCodeInfo.h"
+#import "FBSDKDeviceLoginManager.h"
+#import "FBSDKDeviceLoginManagerResult.h"
+#import "FBSDKLoginConstants.h"
+
+#if !TARGET_OS_TV
+ #import "FBSDKLoginButton.h"
+ #import "FBSDKLoginManager.h"
+ #import "FBSDKLoginManagerLoginResult.h"
+ #import "FBSDKLoginTooltipView.h"
+ #import "FBSDKReferralManager.h"
+ #import "FBSDKReferralManagerResult.h"
+#endif

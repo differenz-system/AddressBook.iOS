@@ -2,8 +2,8 @@
 //  APIManager.swift
 //  AwakenedMind
 //
-//  Created by mac on 6/2/17.
-//  Copyright © 2017 Differenz System Pvt. Ltd. All rights reserved.
+//  Created by DifferenzSystem PVT. LTD. on 01/21/21.
+//  Copyright © 2021 Differenz System Pvt. Ltd. All rights reserved.
 //
 
 import UIKit
@@ -75,17 +75,17 @@ class APIManager: NSObject {
             }
             
             //Make alamofire POST request
-            Alamofire.request(url, method: .post, parameters: requestDictionary ?? [:], encoding: JSONEncoding.default).responseJSON(completionHandler: { (response) in
+            AF.request(url, method: .post, parameters: requestDictionary ?? [:], encoding: JSONEncoding.default).responseJSON(completionHandler: { (response) in
                 switch response.result {
                 case .success:
                     let jsonString: String = String(data: response.data!, encoding: String.Encoding.utf8)!
                     print(jsonString)
                     
                     if response.response?.statusCode == 200 {
-                        success(response.result.value! as AnyObject)
+                        success(response.value! as AnyObject)
                     }
                     else {
-                        let res = response.result.value! as AnyObject
+                        let res = response.value! as AnyObject
                         let msg = res["Message"] as? String
                         if msg != nil {
                             failure(msg!)
