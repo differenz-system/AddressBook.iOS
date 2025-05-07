@@ -32,7 +32,7 @@ The app does the following:
 - **Framework:** MVC
 
 ## Screenshots
-<img src="https://github.com/differenz-system/AddressBook.iOS/blob/master/ScreenShots/login.png" width="280"><img src="https://github.com/differenz-system/AddressBook.iOS/blob/master/ScreenShots/list.png" width="280"> <img src="https://github.com/differenz-system/AddressBook.iOS/blob/master/ScreenShots/detail.png" width="280"> 
+<img src="https://github.com/samarth-naik1906/AddressBook.iOS/blob/master/ScreenShots/login.png" width="280"><img src="https://github.com/samarth-naik1906/AddressBook.iOS/blob/master/ScreenShots/list.png" width="280"> <img src="https://github.com/samarth-naik1906/AddressBook.iOS/blob/master/ScreenShots/details.png" width="280"> 
 
 ## Support
 If you've found an error in this sample, please [report an issue](https://github.com/differenz-system/AddressBook.Android/issues/new). You can also send your feedback and suggestions at info@differenzsystem.com
