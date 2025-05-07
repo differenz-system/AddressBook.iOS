@@ -8,7 +8,7 @@
 
 import UIKit
 import SVProgressHUD
-import FBSDKLoginKit
+//import FBSDKLoginKit
 
 class LoginVC: BaseView {
     
@@ -16,7 +16,7 @@ class LoginVC: BaseView {
     @IBOutlet weak var txtUname: UITextField!
     @IBOutlet weak var txtPassword: UITextField!
     @IBOutlet weak var btnLogin: UIButton!
-    @IBOutlet weak var btnFb: FBLoginButton!
+//    @IBOutlet weak var btnFb: FBLoginButton!
     @IBOutlet weak var imgBg: UIImageView!
     @IBOutlet weak var vwEmail: UIView!
     @IBOutlet weak var vwPassword: UIView!
@@ -94,36 +94,36 @@ class LoginVC: BaseView {
      This method is used to handle FB login button click.
         - Parameter sender: action button
      */
-    @IBAction func btnFacebookLoginTouchUpInsite(_ sender: Any) {
-        let fbManager: LoginManager = LoginManager()
-        fbManager.logOut()
-        
-        //Call login method of FBSDK
-        fbManager.logIn(permissions: ["email"], from: self) { (result, error) in
-            if (error == nil){
-                //Handle the success response of FB Login
-                let fbLoginResult : LoginManagerLoginResult = result!
-                    if(fbLoginResult.grantedPermissions.contains("email")) {
-                        if((AccessToken.current) != nil) {
-                            GraphRequest(graphPath: "me", parameters: ["fields": "id, name, first_name, last_name, picture.type(large), email"]).start(completionHandler: { (connection, result, error) -> Void in
-                                if (error == nil){
-                                    let fbUserDict = result as! [String : AnyObject]
-                                   
-                                    //Saving user Data in Userdefault
-                                    let fbLogin = UserDefaults.standard
-                                    fbLogin.set(fbUserDict, forKey: Constant.UserDefaultsKey.AccFBLogin)
-                                    UserDefaults.standard.set(true, forKey: Constant.UserDefaultsKey.IsLogin)
-
-                                    //Redirect to Address List screen after successful login
-                                    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                                    appDelegate.setupRootView()
-                                }
-                            })
-                        }
-                    }
-            }
-        }
-    }
+//    @IBAction func btnFacebookLoginTouchUpInsite(_ sender: Any) {
+//        let fbManager: LoginManager = LoginManager()
+//        fbManager.logOut()
+//        
+//        //Call login method of FBSDK
+//        fbManager.logIn(permissions: ["email"], from: self) { (result, error) in
+//            if (error == nil){
+//                //Handle the success response of FB Login
+//                let fbLoginResult : LoginManagerLoginResult = result!
+//                    if(fbLoginResult.grantedPermissions.contains("email")) {
+//                        if((AccessToken.current) != nil) {
+//                            GraphRequest(graphPath: "me", parameters: ["fields": "id, name, first_name, last_name, picture.type(large), email"]).start(completionHandler: { (connection, result, error) -> Void in
+//                                if (error == nil){
+//                                    let fbUserDict = result as! [String : AnyObject]
+//                                   
+//                                    //Saving user Data in Userdefault
+//                                    let fbLogin = UserDefaults.standard
+//                                    fbLogin.set(fbUserDict, forKey: Constant.UserDefaultsKey.AccFBLogin)
+//                                    UserDefaults.standard.set(true, forKey: Constant.UserDefaultsKey.IsLogin)
+//
+//                                    //Redirect to Address List screen after successful login
+//                                    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+//                                    appDelegate.setupRootView()
+//                                }
+//                            })
+//                        }
+//                    }
+//            }
+//        }
+//    }
     
     //MARK: - API call method
     /**
