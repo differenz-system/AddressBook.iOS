@@ -5,7 +5,7 @@ This repository contains **Address Book** application for iOS that shows design 
 
 The app does the following:
 1. **Login:** 
-    - User can login via facebook or email/password. 
+    - User can login via email/password. 
 2. **Home:** 
     - It will list all the saved contacts. 
     - It has the option to add a new contact on the top right.
@@ -17,23 +17,22 @@ The app does the following:
     - App supports Light & Dark mode, user can change mode by going into device dark mode settings.
 
 ## Pre-requisites
-- [Xcode 12.0](https://apps.apple.com/us/app/xcode/id497799835?mt=12) or above
-- iOS device or emulator running iOS 12 or above
+- [Xcode 15.0](https://apps.apple.com/us/app/xcode/id497799835?mt=15) or above
+- iOS device or emulator running iOS 17 or above
 
 ## Getting Started
 1. [Install Xcode](https://developer.apple.com/xcode/)
 2. Clone this sample repository
-3. Open AddressBook.xcworkspace file to run project
+3. Open AddressBook.xcodeproj file to run project
 
 ## Key Tools & Technologies
-- **Database:** CoreData
-- **Authentication:** Facebook login
+- **Database:** CoreData 
 - **API/Service calls:** Alamofire
 - **IDE:** [Xcode](https://developer.apple.com/xcode/)
 - **Framework:** MVC
 
 ## Screenshots
-<img src="https://github.com/differenz-system/AddressBook.iOS/blob/master/ScreenShots/login.png" width="280"><img src="https://github.com/differenz-system/AddressBook.iOS/blob/master/ScreenShots/list.png" width="280"> <img src="https://github.com/differenz-system/AddressBook.iOS/blob/master/ScreenShots/detail.png" width="280"> 
+<img src="https://github.com/samarth-naik1906/AddressBook.iOS/blob/master/ScreenShots/login.png" width="280"><img src="https://github.com/samarth-naik1906/AddressBook.iOS/blob/master/ScreenShots/list.png" width="280"> <img src="https://github.com/samarth-naik1906/AddressBook.iOS/blob/master/ScreenShots/details.png" width="280"> 
 
 ## Support
 If you've found an error in this sample, please [report an issue](https://github.com/differenz-system/AddressBook.Android/issues/new). You can also send your feedback and suggestions at info@differenzsystem.com

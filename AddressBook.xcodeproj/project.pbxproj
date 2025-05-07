@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -18,11 +18,15 @@
 		0413FB4220CFA7BE00A0D53D /* AddAddressVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0413FB3F20CFA7BE00A0D53D /* AddAddressVC.swift */; };
 		0413FB4320CFA7BE00A0D53D /* AddressListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0413FB4120CFA7BE00A0D53D /* AddressListVC.swift */; };
 		0413FB4620CFA7F600A0D53D /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0413FB4520CFA7F600A0D53D /* Constant.swift */; };
+		13C330DD2DCB7180007F539D /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 13C330DC2DCB7180007F539D /* Alamofire */; };
+		13C330E02DCB71A6007F539D /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 13C330DF2DCB71A6007F539D /* IQKeyboardManagerSwift */; };
+		13C330E32DCB71D2007F539D /* SVProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 13C330E22DCB71D2007F539D /* SVProgressHUD */; };
+		13C330E62DCB730B007F539D /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 13C330E52DCB730B007F539D /* IQKeyboardManagerSwift */; };
+		13C330E92DCB7489007F539D /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 13C330E82DCB7489007F539D /* IQKeyboardManagerSwift */; };
 		6904C9221F727403002183B5 /* AddressBook.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6904C9201F727403002183B5 /* AddressBook.xcdatamodeld */; };
 		6904C9241F727403002183B5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6904C9231F727403002183B5 /* Assets.xcassets */; };
 		6904C9271F727403002183B5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6904C9251F727403002183B5 /* LaunchScreen.storyboard */; };
 		6904C9361F72753E002183B5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6904C9301F72753E002183B5 /* AppDelegate.swift */; };
-		EE641D0B5AE2AEFEE9596F35 /* Pods_AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AAAF967FE73DFF3A6A0FBB6 /* Pods_AddressBook.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,9 +41,6 @@
 		0413FB3F20CFA7BE00A0D53D /* AddAddressVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddAddressVC.swift; sourceTree = "<group>"; };
 		0413FB4120CFA7BE00A0D53D /* AddressListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressListVC.swift; sourceTree = "<group>"; };
 		0413FB4520CFA7F600A0D53D /* Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
-		0AAAF967FE73DFF3A6A0FBB6 /* Pods_AddressBook.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AddressBook.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1B681C8EE5133E218A12E775 /* Pods-AddressBook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AddressBook.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AddressBook/Pods-AddressBook.debug.xcconfig"; sourceTree = "<group>"; };
-		40D7341AF73D1EF68BF7C1AE /* Pods-AddressBook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AddressBook.release.xcconfig"; path = "Pods/Target Support Files/Pods-AddressBook/Pods-AddressBook.release.xcconfig"; sourceTree = "<group>"; };
 		6904C9161F727403002183B5 /* AddressBook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AddressBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6904C9211F727403002183B5 /* AddressBook.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AddressBook.xcdatamodel; sourceTree = "<group>"; };
 		6904C9231F727403002183B5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -53,7 +54,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE641D0B5AE2AEFEE9596F35 /* Pods_AddressBook.framework in Frameworks */,
+				13C330E92DCB7489007F539D /* IQKeyboardManagerSwift in Frameworks */,
+				13C330E32DCB71D2007F539D /* SVProgressHUD in Frameworks */,
+				13C330E62DCB730B007F539D /* IQKeyboardManagerSwift in Frameworks */,
+				13C330DD2DCB7180007F539D /* Alamofire in Frameworks */,
+				13C330E02DCB71A6007F539D /* IQKeyboardManagerSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,19 +208,9 @@
 			path = AppConstants;
 			sourceTree = "<group>";
 		};
-		064F5495A282FFB15AD1A3CD /* Pods */ = {
+		13C330E42DCB730B007F539D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1B681C8EE5133E218A12E775 /* Pods-AddressBook.debug.xcconfig */,
-				40D7341AF73D1EF68BF7C1AE /* Pods-AddressBook.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
-		5F05B15CB0F2978B9D743D3F /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				0AAAF967FE73DFF3A6A0FBB6 /* Pods_AddressBook.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -224,9 +219,8 @@
 			isa = PBXGroup;
 			children = (
 				6904C9181F727403002183B5 /* AddressBook */,
+				13C330E42DCB730B007F539D /* Frameworks */,
 				6904C9171F727403002183B5 /* Products */,
-				064F5495A282FFB15AD1A3CD /* Pods */,
-				5F05B15CB0F2978B9D743D3F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -269,11 +263,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6904C92B1F727403002183B5 /* Build configuration list for PBXNativeTarget "AddressBook" */;
 			buildPhases = (
-				80E832FF6B889114B94AEB5C /* [CP] Check Pods Manifest.lock */,
 				6904C9121F727403002183B5 /* Sources */,
 				6904C9131F727403002183B5 /* Frameworks */,
 				6904C9141F727403002183B5 /* Resources */,
-				265403895E2302510885612C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -311,6 +303,11 @@
 				Base,
 			);
 			mainGroup = 6904C90D1F727402002183B5;
+			packageReferences = (
+				13C330DB2DCB7180007F539D /* XCRemoteSwiftPackageReference "Alamofire" */,
+				13C330E12DCB71D2007F539D /* XCRemoteSwiftPackageReference "SVProgressHUD" */,
+				13C330E72DCB7489007F539D /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
+			);
 			productRefGroup = 6904C9171F727403002183B5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -333,53 +330,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		265403895E2302510885612C /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AddressBook/Pods-AddressBook-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
-				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
-				"${BUILT_PRODUCTS_DIR}/IQKeyboardManagerSwift/IQKeyboardManagerSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardManagerSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AddressBook/Pods-AddressBook-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		80E832FF6B889114B94AEB5C /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-AddressBook-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		6904C9121F727403002183B5 /* Sources */ = {
@@ -523,7 +473,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -531,15 +482,17 @@
 		};
 		6904C92C1F727403002183B5 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1B681C8EE5133E218A12E775 /* Pods-AddressBook.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Brijesh Tekrawala (JMVHF7JX2U)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 296G98S4G5;
 				INFOPLIST_FILE = AddressBook/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.developer.AddressBook;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "e520340c-af1e-4524-bb7c-7873014b13d5";
@@ -552,15 +505,17 @@
 		};
 		6904C92D1F727403002183B5 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 40D7341AF73D1EF68BF7C1AE /* Pods-AddressBook.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Brijesh Tekrawala (JMVHF7JX2U)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 296G98S4G5;
 				INFOPLIST_FILE = AddressBook/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.developer.AddressBook;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "e520340c-af1e-4524-bb7c-7873014b13d5";
@@ -593,6 +548,69 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		13C330DB2DCB7180007F539D /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+		13C330DE2DCB71A6007F539D /* XCRemoteSwiftPackageReference "IQKeyboardManager" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hackiftekhar/IQKeyboardManager";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.1;
+			};
+		};
+		13C330E12DCB71D2007F539D /* XCRemoteSwiftPackageReference "SVProgressHUD" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SVProgressHUD/SVProgressHUD";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.3.1;
+			};
+		};
+		13C330E72DCB7489007F539D /* XCRemoteSwiftPackageReference "IQKeyboardManager" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hackiftekhar/IQKeyboardManager";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.5.6;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		13C330DC2DCB7180007F539D /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 13C330DB2DCB7180007F539D /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		13C330DF2DCB71A6007F539D /* IQKeyboardManagerSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 13C330DE2DCB71A6007F539D /* XCRemoteSwiftPackageReference "IQKeyboardManager" */;
+			productName = IQKeyboardManagerSwift;
+		};
+		13C330E22DCB71D2007F539D /* SVProgressHUD */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 13C330E12DCB71D2007F539D /* XCRemoteSwiftPackageReference "SVProgressHUD" */;
+			productName = SVProgressHUD;
+		};
+		13C330E52DCB730B007F539D /* IQKeyboardManagerSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 13C330DE2DCB71A6007F539D /* XCRemoteSwiftPackageReference "IQKeyboardManager" */;
+			productName = IQKeyboardManagerSwift;
+		};
+		13C330E82DCB7489007F539D /* IQKeyboardManagerSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 13C330E72DCB7489007F539D /* XCRemoteSwiftPackageReference "IQKeyboardManager" */;
+			productName = IQKeyboardManagerSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		6904C9201F727403002183B5 /* AddressBook.xcdatamodeld */ = {
