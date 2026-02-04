@@ -10,6 +10,7 @@ import UIKit
 import CoreData
 import IQKeyboardManagerSwift
 import SVProgressHUD
+import SwiftUI
 //import FBSDKLoginKit
 //import FBSDKCoreKit
 
@@ -30,6 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
         
         IQKeyboardManager.shared.enable = true
+        
         //self.setSVProgressHUDconfiguration()
         return true
     }

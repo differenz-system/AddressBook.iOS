@@ -75,7 +75,7 @@ class APIManager: NSObject {
             }
             
             //Make alamofire POST request
-            AF.request(url, method: .post, parameters: requestDictionary ?? [:], encoding: JSONEncoding.default).responseJSON(completionHandler: { (response) in
+            AF.request(url, method: .post, parameters: requestDictionary ?? [:], encoding: JSONEncoding.default).response(completionHandler: { (response) in
                 switch response.result {
                 case .success:
                     let jsonString: String = String(data: response.data!, encoding: String.Encoding.utf8)!

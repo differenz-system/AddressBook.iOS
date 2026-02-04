@@ -145,6 +145,7 @@ class LoginVC: BaseView {
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
             appDelegate.setupRootView()
         }, failure: { (error) in
+            
             SVProgressHUD.dismiss()
             Utilities.showAlert(msg: error, vc: self)
             print(error)

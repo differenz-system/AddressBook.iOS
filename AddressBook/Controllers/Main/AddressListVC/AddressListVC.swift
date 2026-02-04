@@ -10,8 +10,6 @@
 import UIKit
 import CoreData
 
-
-
 class AddressListVC: BaseView {
     
     //MARK: - IBoutlet
@@ -28,8 +26,7 @@ class AddressListVC: BaseView {
     
     var users = [User]()
     var letters = [String]()
-  
-   
+    
     var shouldShowSearchResults = false
   
     var names = [String]()
@@ -40,7 +37,6 @@ class AddressListVC: BaseView {
     //MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
-            
         
         // Do any additional setup after loading the view.
         self.initialConfig()
@@ -72,8 +68,14 @@ class AddressListVC: BaseView {
         self.searchBar.layer.borderColor = searchBar.barTintColor?.cgColor
         self.searchBar.isTranslucent = true
         self.searchBar.setBackgroundImage(UIImage(), for: .any, barMetrics: .default)
+        
         UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).backgroundColor = .clear
+        
         self.searchBar.setImage(UIImage(), for: .search, state: .normal)
+        self.searchBar.searchTextField.backgroundColor = .white
+        
+        self.searchBar.delegate = self
+        
         self.navigationController?.isNavigationBarHidden = true
         self.tblAddress.register(UINib(nibName: "ListCell", bundle: nil), forCellReuseIdentifier: "ListCell")
         self.tblAddress.tableFooterView = UIView()
@@ -82,7 +84,9 @@ class AddressListVC: BaseView {
         self.lblNoData.isHidden = true
         self.imgBg.roundBottomCorners(radius: 30)
         self.vwImgBg.roundBottomCorners(radius: 30)
-        vwSearchBar.roundedBorder()
+//        vwSearchBar.roundedBorder()
+        
+        vwSearchBar.backgroundColor = UIColor.clear
         
     }
     
@@ -110,10 +114,6 @@ class AddressListVC: BaseView {
         self.appDelegate.setupRootView()
         
     }
-   
-    
-   
-    
     
     func clearData() {
         self.users.removeAll()
@@ -121,7 +121,6 @@ class AddressListVC: BaseView {
         self.names.removeAll()
         self.contacts.removeAll()
     }
-    
     
     /**
      This method is used to fetch data from CoreData.
@@ -324,5 +323,4 @@ extension AddressListVC : UISearchBarDelegate{
         self.tblAddress.reloadData()
         
     }
-    
 }
